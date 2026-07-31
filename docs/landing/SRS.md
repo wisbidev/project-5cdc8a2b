@@ -192,23 +192,25 @@ Behaviour:
 1. The Contact section renders at the bottom of the page, anchored as `#contact`.
 2. It contains a closing call-to-action heading.
 3. It displays at least three contact links: email, GitHub, and LinkedIn.
-4. Each contact link is clickable and opens in a new tab.
+4. Each contact link is clickable and opens in a new tab. After a social link (GitHub or LinkedIn) is clicked, a toast notification appears confirming the action.
 5. It includes a contact form with fields: Name (required), Email (required, validated format), and Message (required, min 10 characters).
 6. On valid form submission, the form composes a `mailto:` link with fields prefilled and opens the user's email client.
+7. When JavaScript is disabled, the contact form remains functional via a standard HTML form `action="mailto:"` with a `target="_blank"`, allowing the email app to open without client-side script.
 
 **Acceptance criteria** — each maps one-to-one onto a test case in `docs/landing/test-cases/contact.md`.
 
 | # | Given | When | Then |
 |---|---|---|---|
 | AC-17 | Contact section is present | Page renders | Email, GitHub, and LinkedIn links are visible and clickable |
-| AC-18 | User clicks the GitHub link | Link is clicked | GitHub profile opens in a new tab |
-| AC-19 | User clicks the LinkedIn link | Link is clicked | LinkedIn profile opens in a new tab |
+| AC-18 | User clicks the GitHub link | Link is clicked | GitHub profile opens in a new tab and a toast notification appears |
+| AC-19 | User clicks the LinkedIn link | Link is clicked | LinkedIn profile opens in a new tab and a toast notification appears |
 | AC-20 | User clicks the email link | Link is clicked | Default email client opens with the owner address pre-filled |
 | AC-21 | Form has empty required fields | Submit is clicked | Inline validation errors appear on each empty required field |
 | AC-22 | Form email field has invalid format | Submit is clicked | Inline error "Please enter a valid email address" appears on the email field |
 | AC-23 | Form message field has fewer than 10 characters | Submit is clicked | Inline error "Message must be at least 10 characters" appears on the message field |
 | AC-24 | All form fields are valid | Submit is clicked | The browser opens a `mailto:` link with name, email, and message prefilled |
 | AC-25 | Contact form is submitted with valid data | No scroll action | Page does not navigate or refresh |
+| AC-26 | JavaScript is disabled | Form is submitted | Email client opens with form fields prefilled via standard `mailto:` form action |
 
 **Failure, boundary and permission behaviour**
 
