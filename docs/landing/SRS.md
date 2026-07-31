@@ -1,7 +1,7 @@
-# SRS — Landing page (Giới thiệu bản thân)
+# SRS — Landing Page
 
 Module: `landing`
-Last updated: 2025-07-05
+Last updated: 2026-01-23
 Design: [View the approved design](http://localhost:8080/design/5cdc8a2b-3d38-49de-8c34-de98338ebff0)
 Design system: `design/design-system.md`
 
@@ -10,27 +10,15 @@ Design system: `design/design-system.md`
 
 ## 1. Purpose
 
-A single-page personal introduction site ("Giới thiệu bản thân" — *Introduce
-myself*) that presents the owner to visitors: who they are, what they do, their
-skills, three sample projects, and how to reach them. It is the owner's digital
-business card and first impression for recruiters, clients, and collaborators.
-
-The module is a static landing page (Next.js + TypeScript + Tailwind CSS) with
-no backend, no database, and no sign-in. All content is placeholder copy taken
-from the approved design; the owner later replaces it with their real details
-directly in source. If this module does not exist, the owner has no public
-presence for this project.
+A single-page personal introduction landing page ("Giới thiệu bản thân") that introduces the page owner — who they are, what they do, highlights, and how to reach them. Any visitor lands here and leaves knowing who the owner is and how to contact them. Without this page the owner has no online presence.
 
 ## 2. Actors
 
-This page has exactly one runtime role — anyone who opens it. There is no
-authentication and no account state; content is edited in source code, not in
-the product.
-
 | Actor | Who they are | What they may do in this module |
 |---|---|---|
-| Visitor | Anyone who opens the page | View all sections, open project case-study modals, use the contact form (composes an email), follow contact links |
-| Owner | The person the page introduces | Not an in-product role; replaces placeholder content and real profile URLs in the source code |
+| Guest | Any visitor, not signed in | Read all sections, click external links, submit the contact form |
+
+No authentication, no role differences, no permissions to manage — the entire page is publicly readable.
 
 ## 3. Scope
 
@@ -42,561 +30,242 @@ the product.
 - Projects section
 - Contact section
 
-The approved design also specifies a page shell that ships inside the hero and
-contact stories: a sticky header with section navigation and a mobile menu, a
-skip link, a footer with a back-to-top control, and a toast for placeholder
-links. Behavioural requirements for these live under §4.1 and §4.5.
+**Out of scope:**
 
-**Out of scope** — what a reader would reasonably expect here and where it
-lives instead:
+- User authentication or accounts — belongs to no module; this is a static page.
+- Email backend or database storage of form submissions — the form composes a `mailto:` link only (no server, no database).
+- Analytics, A/B testing, or session tracking — not requested.
 
-- Backend, database, or CMS — deliberately not built; the page is fully static
-  and content is edited in source.
-- Real social profile URLs (GitHub, LinkedIn) — not yet known; links are
-  placeholders that show a toast until the owner supplies the URLs.
-- Analytics, tracking, or form data storage — deliberately not built; the form
-  only composes a `mailto:` email and nothing is transmitted to a server.
 ## 4. Functional requirements
-
-One subsection per function. Every requirement carries a stable id
-`LANDING-NNN` — ids are permanent: never renumber, never reuse. When a
-requirement is dropped, mark it `(withdrawn)` and keep the id.
 
 ### 4.1 Hero section
 
-The top of the page: a full-width hero with the owner's name, a one-line
-headline, a short tagline, and a call-to-action button that scrolls to the
-contact section. This function also covers the page header shell that sits
-above the hero, because the hero story builds the top of the page as one unit.
-
 **Requirement LANDING-001 — Hero renders above the fold**
 
-*As a* Visitor, *I want to* see the owner's name, a one-line headline, a short
-tagline, and a call-to-action button as soon as the page opens, *so that* I
-immediately know who this page is about and what to do next.
+*As a* Guest, *I want to* see the hero section immediately on page load, *so that* I know who this page belongs to and what it is.
 
 Behaviour:
 
-1. The page opens with a full-width hero section as its first content.
-2. The hero displays, in order: the owner's name (as a heading), a one-line
-   headline, a short tagline, and a call-to-action button labelled to invite
-   contact (e.g. "Get in touch").
-3. On desktop (≥ 1120px) the entire hero content — name, headline, tagline and
-   CTA — is visible without scrolling.
-4. On mobile (375px) at least the name, tagline and CTA are visible without
-   scrolling, and no element overflows the viewport width.
+1. On page load the browser displays the hero section at the top of the viewport without scrolling.
+2. The hero contains: owner's name, one-line headline, a short tagline, and a single call-to-action (CTA) button.
+3. The CTA button, when clicked, scrolls the page smoothly to the `#contact` section.
 
-**Acceptance criteria** — each maps one-to-one onto a test case in
-`docs/landing/test-cases/hero.md`. Given/When/Then, no compound conditions: one
-behaviour per criterion.
+**Acceptance criteria** — each maps one-to-one onto a test case in `docs/landing/test-cases/hero.md`.
 
 | # | Given | When | Then |
 |---|---|---|---|
-| AC-1 | A desktop viewport (≥ 1120px) | the page finishes loading | the hero shows the name, headline, tagline and CTA button, all visible without scrolling |
-| AC-2 | A mobile viewport (375px) | the page finishes loading | the hero shows the name, tagline and CTA button without scrolling and with no horizontal overflow |
-| AC-3 | The hero is displayed | I check the CTA button | it has an accessible label and is a real button/anchor, not static text |
+| AC-1 | Page loads on a desktop viewport (≥1024 px wide) | No scroll action | Hero name, headline, tagline, and CTA button are visible in the initial viewport |
+| AC-2 | Page loads on a mobile viewport (375 px wide) | No scroll action | Hero name, headline, tagline, and CTA button are visible without horizontal scroll |
+| AC-3 | User clicks the CTA button | Button is clicked | Page scrolls smoothly to the `#contact` section |
+| AC-4 | User clicks the CTA button on a touch device | Button is tapped | Page scrolls smoothly to the `#contact` section |
 
 **Failure, boundary and permission behaviour**
 
 | Case | Condition | Expected behaviour |
 |---|---|---|
-| Boundary | Headline or tagline is long | Text wraps within the hero container; the page never scrolls horizontally |
-| Missing target | The `contact` section id is absent | Defect — the CTA must always target the contact section on this page; tests assert the target exists |
-| Not permitted | N/A | No permission model exists on a public static page; every visitor sees the full hero |
+| Slow network | Hero assets or fonts take > 3 s to load | Content renders progressively; text is never invisible |
+| Missing asset | A hero image (if present) fails to load | Placeholder colour fills the image area; no broken icon is shown |
+| JavaScript disabled | Script does not execute | Page still renders; CTA button scrolls to `#contact` via native anchor href fallback |
 
-**Data touched** — static placeholder content in source; no runtime data.
+**Data touched** — no fields read or written by this component.
 
-| Field | Type | Required | Rule |
-|---|---|---|---|
-| Name | text | yes | Heading-level text, ≤ 40 characters placeholder |
-| Headline | text | yes | One line, wraps gracefully on small screens |
-| Tagline | text | yes | Short paragraph, placeholder copy |
-| CTA label | text | yes | Invites contact; scrolls to `#contact` |
-
-**Requirement LANDING-002 — CTA scrolls to the contact section**
-
-*As a* Visitor, *I want to* click the call-to-action and land on the contact
-section, *so that* I can reach the owner without scrolling manually.
-
-Behaviour:
-
-1. The hero CTA targets the contact section element (anchor `contact`).
-2. Clicking the CTA scrolls the page smoothly to the contact section.
-3. When the visitor prefers reduced motion, scrolling jumps instantly instead
-   of animating.
-
-**Acceptance criteria**
-
-| # | Given | When | Then |
-|---|---|---|---|
-| AC-1 | The hero is displayed | I click the CTA button | the page scrolls to the contact section (element with id `contact`) |
-| AC-2 | The visitor has `prefers-reduced-motion: reduce` | I click the CTA button | the page jumps to the contact section without animation |
-
-**Failure, boundary and permission behaviour**
-
-| Case | Condition | Expected behaviour |
-|---|---|---|
-| Boundary | Reduced-motion preference is on | Scroll animation is disabled; navigation still works |
-| Missing target | No element with id `contact` | Clicking the CTA does not visibly scroll; covered by AC-1, which asserts the target exists |
-
-**Data touched** — none (anchor navigation only).
-
-**Requirement LANDING-003 — Sticky header navigation**
-
-*As a* Visitor, *I want to* reach any section from a header that stays on
-screen, *so that* I can navigate a long page quickly.
-
-Behaviour:
-
-1. A header sticks to the top of the viewport while scrolling.
-2. On desktop (≥ 860px) the header shows the brand, links to the About,
-   Skills, Projects and Contact sections, and the CTA.
-3. Clicking a header link scrolls to its section.
-4. On mobile (< 860px) the links and CTA collapse behind a menu toggle
-   (hamburger); the toggle announces its state (`aria-expanded`) and opens or
-   closes the menu; Escape closes an open menu.
-
-**Acceptance criteria**
-
-| # | Given | When | Then |
-|---|---|---|---|
-| AC-1 | The page is scrolled down | I look at the top of the viewport | the header remains visible (sticky) |
-| AC-2 | A desktop viewport (≥ 860px) | I click a header link | the page scrolls to that section |
-| AC-3 | A mobile viewport (< 860px) | I click the menu toggle | the menu opens, and `aria-expanded` reflects the open state; clicking again or pressing Escape closes it |
-
-**Failure, boundary and permission behaviour**
-
-| Case | Condition | Expected behaviour |
-|---|---|---|
-| Boundary | Exactly at the 860px breakpoint | Desktop header is shown (≥ 860px) |
-| Not permitted | N/A | Public page; no role restrictions |
-
-**Data touched** — none (static links).
-
-**Requirement LANDING-004 — Skip link**
-
-*As a* keyboard Visitor, *I want to* jump straight to the main content, *so
-that* I do not tab through the navigation on every visit.
-
-Behaviour:
-
-1. A skip link is the first focusable element on the page.
-2. It is visually hidden until it receives keyboard focus, then becomes
-   visible and moves focus to the main content.
-
-**Acceptance criteria**
-
-| # | Given | When | Then |
-|---|---|---|---|
-| AC-1 | The page has loaded | I press Tab once | the skip link appears and, when activated, moves focus to the main content |
-
-**Failure, boundary and permission behaviour**
-
-| Case | Condition | Expected behaviour |
-|---|---|---|
-| Boundary | Skip link not focused | It stays visually hidden and does not intercept other focus |
-
-**Data touched** — none.
 ### 4.2 About section
 
-**Requirement LANDING-005 — About block renders**
+**Requirement LANDING-002 — About section displays personal introduction**
 
-*As a* Visitor, *I want to* read a short personal introduction and a few quick
-facts, *so that* I understand the owner's background and focus.
+*As a* Guest, *I want to* read a short personal introduction and quick facts, *so that* I understand who the owner is and what they focus on.
 
 Behaviour:
 
-1. The About section shows a short paragraph describing the owner's background
-   and what they do.
-2. It also shows quick facts — at minimum location and focus area — presented
-   as small fact rows or chips.
+1. The About section renders below the hero.
+2. It contains a short personal paragraph (≥ 2 sentences, ≤ 150 words) describing the owner's background and current focus.
+3. It displays at least three quick-facts items (e.g. location, industry focus, years of experience).
+4. Text remains readable at all supported breakpoints (320 px to 1920 px wide).
 
-**Acceptance criteria**
+**Acceptance criteria** — each maps one-to-one onto a test case in `docs/landing/test-cases/about.md`.
 
 | # | Given | When | Then |
 |---|---|---|---|
-| AC-1 | The About section is displayed | I read it | it contains an introduction paragraph and fact rows for location and focus area |
-| AC-2 | The section is displayed | I inspect the content | every quick fact value is populated (no empty rows) |
+| AC-5 | Page loads at 320 px wide | No scroll action | About section text does not overflow horizontally |
+| AC-6 | Page loads at 1440 px wide | No scroll action | About section text reflows to a comfortable reading width |
+| AC-7 | About paragraph is present | Page renders | At least 2 sentences of intro text are visible |
+| AC-8 | Quick-facts items are present | Page renders | At least 3 quick-facts items are visible |
 
 **Failure, boundary and permission behaviour**
 
 | Case | Condition | Expected behaviour |
 |---|---|---|
-| Boundary | Paragraph text is long | Text wraps within the container; no clipping and no horizontal scroll |
-| Not permitted | N/A | Public page; full content visible to every visitor |
+| Empty paragraph | No intro text is configured | A visible placeholder message is shown ("Intro text coming soon") |
+| Missing quick facts | Fewer than 3 facts are configured | Available facts render; no broken or empty list item is shown |
 
-**Data touched** — static placeholder content in source.
+**Data touched**
 
 | Field | Type | Required | Rule |
 |---|---|---|---|
-| Intro paragraph | text | yes | Several sentences about background and work |
-| Location fact | text | yes | Short value, e.g. a city |
-| Focus area fact | text | yes | Short value, e.g. "Web & product design" |
-
-**Requirement LANDING-006 — About text is readable at all breakpoints**
-
-*As a* Visitor, *I want to* read the introduction comfortably on any device,
-*so that* the page works on mobile as well as desktop.
-
-Behaviour:
-
-1. At every breakpoint from 320px up, the About text stays within its
-   container at the body text size defined in the design system (≥ 15px),
-   wraps correctly, and does not cause horizontal page scroll.
-2. Fact rows reflow from a two-column arrangement on wide screens to stacked
-   rows on narrow screens.
-
-**Acceptance criteria**
-
-| # | Given | When | Then |
-|---|---|---|---|
-| AC-1 | A mobile viewport (320px) | the About section is rendered | all text is fully visible, ≥ 15px, with no horizontal scroll |
-| AC-2 | A desktop viewport (≥ 1120px) | the About section is rendered | facts display side by side (two columns) |
-| AC-3 | A mobile viewport (≤ 640px) | the About section is rendered | facts stack in a single column and remain fully visible |
-
-**Failure, boundary and permission behaviour**
-
-| Case | Condition | Expected behaviour |
-|---|---|---|
-| Boundary | 320px viewport | Text never overflows or clips; page has no horizontal scrollbar |
-| Not permitted | N/A | — |
-
-**Data touched** — none at runtime (static content only).
+| owner_bio | text | no | max 150 words; falls back to placeholder if empty |
+| owner_location | text | no | one line, falls back to placeholder if empty |
+| owner_focus | text | no | one line, falls back to placeholder if empty |
+| owner_experience_years | number | no | integer, falls back to placeholder if empty |
 
 ### 4.3 Skills section
 
-**Requirement LANDING-007 — Six skill cards render**
+**Requirement LANDING-003 — Skills section displays skill grid**
 
-*As a* Visitor, *I want to* see the owner's skills as a grid of cards, *so
-that* I can scan what they are good at.
+*As a* Guest, *I want to* see the owner's skills in a scannable grid, *so that* I quickly understand their capabilities.
 
 Behaviour:
 
-1. The Skills section shows a grid of six skill cards.
-2. Each card contains a title (e.g. "Web Development", "Design",
-   "Communication") and a one-line description.
+1. The Skills section renders below the About section.
+2. It displays a grid of skill cards, each with a skill name and a one-line description.
+3. The grid shows 3 columns on desktop (≥1024 px), 2 on tablet (≥640 px), and 1 on mobile (<640 px).
+4. Each card has consistent height within a row.
 
-**Acceptance criteria**
+**Acceptance criteria** — each maps one-to-one onto a test case in `docs/landing/test-cases/skills.md`.
 
 | # | Given | When | Then |
 |---|---|---|---|
-| AC-1 | The Skills section is displayed | I count the cards | exactly six cards are shown |
-| AC-2 | A card is displayed | I read it | it shows a title and a one-line description, both non-empty |
+| AC-9 | Page renders on desktop (≥1024 px) | No scroll action | Skills grid shows exactly 3 columns |
+| AC-10 | Page renders on tablet (≥640 px, <1024 px) | No scroll action | Skills grid shows exactly 2 columns |
+| AC-11 | Page renders on mobile (<640 px) | No scroll action | Skills grid shows exactly 1 column |
+| AC-12 | At least 3 skill cards are present | Page renders | All visible cards display a skill name and a one-line description |
 
 **Failure, boundary and permission behaviour**
 
 | Case | Condition | Expected behaviour |
 |---|---|---|
-| Boundary | A description is longer than one line of its column | It wraps within the card; the card grows without breaking the grid |
-| Not permitted | N/A | — |
+| Fewer than 6 skills | Fewer than 6 skill cards are configured | Available cards render; no empty card slots are shown |
+| Long skill name | Skill name text is long (≥ 40 characters) | Text wraps within the card; card does not overflow the grid column |
+| Long description | Description text is long (≥ 120 characters) | Text wraps; card height adjusts; other cards in the row do not change height unexpectedly |
 
-**Data touched** — static placeholder content.
+**Data touched**
 
 | Field | Type | Required | Rule |
 |---|---|---|---|
-| Skill title | text | yes | Short noun phrase, e.g. "Web Development" |
-| Skill description | text | yes | One sentence, placeholder copy |
+| skill_name | text | yes | max 50 characters per card |
+| skill_description | text | yes | max 120 characters per card |
 
-**Requirement LANDING-008 — Grid reflows responsively**
-
-*As a* Visitor, *I want to* see the skills reflow cleanly, *so that* they are
-legible on every screen size.
-
-Behaviour:
-
-1. On wide screens (≥ 1120px) the grid shows three columns.
-2. On medium screens it shows two columns.
-3. On mobile (≤ 640px) it shows one column.
-
-**Acceptance criteria**
-
-| # | Given | When | Then |
-|---|---|---|---|
-| AC-1 | A desktop viewport (≥ 1120px) | the Skills section is rendered | the six cards form a 3-column grid |
-| AC-2 | A mobile viewport (≤ 640px) | the Skills section is rendered | the cards stack in a single column, each fully visible |
-| AC-3 | Any viewport | the Skills section is rendered | cards do not overlap and the page does not scroll horizontally |
-
-**Failure, boundary and permission behaviour**
-
-| Case | Condition | Expected behaviour |
-|---|---|---|
-| Boundary | Exactly 640px | Single column applies (≤ 640px); two columns above |
-| Not permitted | N/A | — |
-
-**Data touched** — none at runtime.
 ### 4.4 Projects section
 
-**Requirement LANDING-009 — Three project cards render**
+**Requirement LANDING-004 — Projects section showcases sample projects**
 
-*As a* Visitor, *I want to* see a showcase of three sample projects, *so that*
-I can gauge the owner's work.
+*As a* Guest, *I want to* see sample projects with descriptions and links, *so that* I can evaluate the owner's work.
 
 Behaviour:
 
-1. The Projects section shows three project cards.
-2. Each card contains a project title, a one-line description, and a
-   "Case study" link (per the approved design, the link opens a detail modal —
-   see LANDING-010).
-3. The section intro mentions the owner's GitHub; that GitHub link is a
-   placeholder and behaves as specified in LANDING-011.
+1. The Projects section renders below the Skills section.
+2. It displays exactly 3 project cards.
+3. Each card shows: project title, a one-line description, and a link.
+4. Each link opens in a new browser tab (`target="_blank"`, `rel="noopener noreferrer"`).
 
-**Acceptance criteria**
+**Acceptance criteria** — each maps one-to-one onto a test case in `docs/landing/test-cases/projects.md`.
 
 | # | Given | When | Then |
 |---|---|---|---|
-| AC-1 | The Projects section is displayed | I count the cards | exactly three cards are shown |
-| AC-2 | A project card is displayed | I read it | it shows a title, a one-line description, and a "Case study" control, all non-empty |
-| AC-3 | The Projects section is displayed | I check the section intro | the GitHub link is present and clickable (shows the placeholder toast per LANDING-011) |
+| AC-13 | Page renders | No scroll action | Exactly 3 project cards are visible |
+| AC-14 | All 3 project cards are present | Page renders | Each card shows a title, a one-line description, and a clickable link |
+| AC-15 | User clicks a project link | Link is clicked | The linked page opens in a new browser tab |
+| AC-16 | Project links are configured | Page renders | Each link has `target="_blank"` and `rel="noopener noreferrer"` |
 
 **Failure, boundary and permission behaviour**
 
 | Case | Condition | Expected behaviour |
 |---|---|---|
-| Boundary | Description is long | It wraps within the card; cards in a row keep equal height |
-| Not permitted | N/A | — |
+| Link URL is missing | A project card has no URL configured | Card still renders title and description; the link element is absent or styled as disabled |
+| Broken link URL | URL is not a valid URI | Browser navigates normally; no JavaScript error is thrown |
 
-**Data touched** — static placeholder content.
+**Data touched**
 
 | Field | Type | Required | Rule |
 |---|---|---|---|
-| Project title | text | yes | Short title, e.g. "Travel Planner" |
-| Project description | text | yes | One sentence |
-| Case-study control | control | yes | Button opening the matching modal |
-| Modal content | text | yes | Tag, heading, role/meta line, paragraphs, CTA |
-
-**Requirement LANDING-010 — Case study opens a modal**
-
-*As a* Visitor, *I want to* click "Case study" and see the project's details in
-an overlay, *so that* I can learn more without leaving the page.
-
-Behaviour:
-
-1. Clicking a card's "Case study" control opens the modal belonging to that
-   card (each of the three cards opens its own modal).
-2. The modal is a dialog with `role="dialog"`, `aria-modal="true"`, and an
-   accessible name; while open, focus is trapped inside it and the page behind
-   is inert.
-3. The modal closes when the visitor clicks its close button, clicks the
-   backdrop outside the dialog, or presses Escape.
-4. On close, focus returns to the "Case study" control that opened it.
-5. Only one modal is open at a time.
-
-**Acceptance criteria**
-
-| # | Given | When | Then |
-|---|---|---|---|
-| AC-1 | A project card is displayed | I click its "Case study" control | a modal opens showing that project's title and detail content |
-| AC-2 | The modal is open | I click the close button | the modal closes and focus returns to the control that opened it |
-| AC-3 | The modal is open | I press Escape | the modal closes and focus returns to the control that opened it |
-| AC-4 | The modal is open | I click the backdrop outside the dialog | the modal closes |
-| AC-5 | A modal is open | I press Tab repeatedly | focus stays within the modal (focus trap) |
-| AC-6 | A modal is open | I try to open another card's modal | the open modal closes and the new one opens; never two at once |
-
-**Failure, boundary and permission behaviour**
-
-| Case | Condition | Expected behaviour |
-|---|---|---|
-| Boundary | Modal content is taller than the viewport | The dialog scrolls internally (`max-height`), the page behind does not scroll |
-| Not permitted | N/A | — |
-| Conflict | Two "Case study" clicks in quick succession | The second click replaces the open modal (no stacked modals) |
-
-**Data touched** — static content only; the modal holds the card's detail copy.
+| project_title | text | yes | max 80 characters |
+| project_description | text | yes | max 120 characters |
+| project_url | text | no | must be a valid URL if present |
 
 ### 4.5 Contact section
 
-**Requirement LANDING-011 — Contact links**
+**Requirement LANDING-005 — Contact section provides reach-out options**
 
-*As a* Visitor, *I want to* reach the owner by email, GitHub and LinkedIn,
-*so that* I can get in touch the way I prefer.
+*As a* Guest, *I want to* find contact information and reach the owner, *so that* I can get in touch.
 
 Behaviour:
 
-1. The contact section shows an email link, a GitHub link and a LinkedIn link.
-2. Clicking the email link opens the visitor's email client with the owner's
-   address pre-filled (`mailto:`).
-3. GitHub and LinkedIn do not yet have real URLs. While they are placeholders,
-   clicking either shows a toast that names the link as a placeholder (e.g.
-   "GitHub link is a placeholder") and does not navigate away.
-4. The same placeholder-toast behaviour applies to the GitHub link in the
-   Projects section intro (LANDING-009).
-5. The toast is announced to assistive technology (`role="status"`) and
-   dismisses itself after a few seconds.
+1. The Contact section renders at the bottom of the page, anchored as `#contact`.
+2. It contains a closing call-to-action heading.
+3. It displays at least three contact links: email, GitHub, and LinkedIn.
+4. Each contact link is clickable and opens in a new tab.
+5. It includes a contact form with fields: Name (required), Email (required, validated format), and Message (required, min 10 characters).
+6. On valid form submission, the form composes a `mailto:` link with fields prefilled and opens the user's email client.
 
-**Acceptance criteria**
+**Acceptance criteria** — each maps one-to-one onto a test case in `docs/landing/test-cases/contact.md`.
 
 | # | Given | When | Then |
 |---|---|---|---|
-| AC-1 | The contact section is displayed | I click the email link | the email client opens with the owner's address pre-filled |
-| AC-2 | The contact section is displayed | I click the GitHub link | a toast appears naming the placeholder, and the page does not navigate |
-| AC-3 | The contact section is displayed | I click the LinkedIn link | a toast appears naming the placeholder, and the page does not navigate |
-| AC-4 | The Projects section intro | I click its GitHub link | the same placeholder toast appears and the page does not navigate |
+| AC-17 | Contact section is present | Page renders | Email, GitHub, and LinkedIn links are visible and clickable |
+| AC-18 | User clicks the GitHub link | Link is clicked | GitHub profile opens in a new tab |
+| AC-19 | User clicks the LinkedIn link | Link is clicked | LinkedIn profile opens in a new tab |
+| AC-20 | User clicks the email link | Link is clicked | Default email client opens with the owner address pre-filled |
+| AC-21 | Form has empty required fields | Submit is clicked | Inline validation errors appear on each empty required field |
+| AC-22 | Form email field has invalid format | Submit is clicked | Inline error "Please enter a valid email address" appears on the email field |
+| AC-23 | Form message field has fewer than 10 characters | Submit is clicked | Inline error "Message must be at least 10 characters" appears on the message field |
+| AC-24 | All form fields are valid | Submit is clicked | The browser opens a `mailto:` link with name, email, and message prefilled |
+| AC-25 | Contact form is submitted with valid data | No scroll action | Page does not navigate or refresh |
 
 **Failure, boundary and permission behaviour**
 
 | Case | Condition | Expected behaviour |
 |---|---|---|
-| Boundary | No email client is configured | The browser applies its default `mailto:` handling; the page does not need to compensate |
-| Not permitted | N/A | — |
+| No email address configured | Owner email is absent | Email link is hidden; the form submit still works via a fallback `mailto:` |
+| Browser has no default email client | `mailto:` is triggered | Nothing happens; no error is thrown to the user |
+| XSS in form fields | A user injects `<script>` in Name or Message | Input is escaped before insertion into the `mailto:` link; no script executes |
+| Tab key navigation | User reaches the submit button | Submit button is reachable and activatable with keyboard only |
 
 **Data touched**
 
 | Field | Type | Required | Rule |
 |---|---|---|---|
-| Owner email | text | yes | Valid `mailto:` target (placeholder: `hello@minhan.dev`) |
-| GitHub URL | text | placeholder | Empty until the owner supplies it; toast while placeholder |
-| LinkedIn URL | text | placeholder | Empty until the owner supplies it; toast while placeholder |
-**Requirement LANDING-012 — Contact form validates input**
+| contact_name | text | yes | required; min 1 character |
+| contact_email | text | yes | required; must match email regex |
+| contact_message | text | yes | required; min 10 characters |
 
-*As a* Visitor, *I want to* send a message through a simple form, *so that* I
-can contact the owner without leaving the page.
-
-Behaviour:
-
-1. The contact form has three fields: name, email, and message, each with a
-   visible label.
-2. On submit, the form validates client-side: name is non-empty, email is
-   non-empty and a well-formed address, message is non-empty.
-3. Invalid fields show an inline error message naming the problem (e.g.
-   "Please tell me your name.", "Please enter a valid email address.",
-   "Please write a short message."); focus moves to the first invalid field.
-4. While errors are shown, no email is composed (the submit is blocked).
-
-**Acceptance criteria**
-
-| # | Given | When | Then |
-|---|---|---|---|
-| AC-1 | The form is empty | I submit it | inline errors appear on name, email and message, and no email client opens |
-| AC-2 | Name and message are filled but email is `not-an-email` | I submit it | an inline error on the email field says the address is invalid, and no email client opens |
-| AC-3 | The form has errors | I correct all fields and submit again | errors clear and the form proceeds (see LANDING-013) |
-| AC-4 | The form is displayed | I inspect it | every field has a visible label associated with it (`<label for>`) |
-
-**Failure, boundary and permission behaviour**
-
-| Case | Condition | Expected behaviour |
-|---|---|---|
-| Invalid input | Field empty or malformed | Inline error on that field; nothing is composed; focus moves to the first invalid field |
-| Boundary | Message with only whitespace | Treated as empty; error shown |
-| Double submit | Visitor clicks submit twice quickly | Only one email is composed (submission is guarded against double-trigger) |
-| Not permitted | N/A | — |
-
-**Data touched**
-
-| Field | Type | Required | Rule |
-|---|---|---|---|
-| Name | text | yes | Non-empty after trimming |
-| Email | text | yes | Non-empty, well-formed address |
-| Message | text | yes | Non-empty after trimming |
-
-**Requirement LANDING-013 — Valid submit composes a pre-filled email**
-
-*As a* Visitor, *I want to* submit the form and have my email app open with
-everything pre-filled, *so that* sending the message takes one click.
-
-Behaviour:
-
-1. On a valid submit, the page opens the visitor's email client via a
-   `mailto:` link addressed to the owner, with the subject and the message
-   body pre-filled from the form fields.
-2. The page then shows a success message confirming the email app should have
-   opened, with a direct `mailto:` fallback link to the owner's address in
-   case it did not.
-3. The submit button reflects the submission (label changes, e.g. to "Sent!")
-   and cannot be double-triggered.
-
-**Acceptance criteria**
-
-| # | Given | When | Then |
-|---|---|---|---|
-| AC-1 | All three fields are valid | I submit the form | the email client opens with the owner's address, and the subject/body pre-filled from my input |
-| AC-2 | A valid submit has happened | I look at the form | a success message appears that includes a direct email link to the owner |
-| AC-3 | A valid submit has happened | I click submit again | no second email is composed (double-submit guard) |
-
-**Failure, boundary and permission behaviour**
-
-| Case | Condition | Expected behaviour |
-|---|---|---|
-| Upstream failure | No email client is configured | The success message's direct `mailto:` link remains the fallback; the page shows no error it cannot act on |
-| Double submit | Two rapid clicks | Guarded; a single email is composed and the button shows "Sent!" |
-
-**Data touched** — the form values are only placed into the `mailto:` URI; the
-page stores or transmits nothing.
-
-**Requirement LANDING-014 — Footer and back-to-top**
-
-*As a* Visitor, *I want to* see a footer with a back-to-top control, *so that*
-I can return to the top of a long page easily.
-
-Behaviour:
-
-1. The page ends with a footer that shows the current year (computed at
-   render time) and a back-to-top control.
-2. Clicking back-to-top scrolls smoothly to the top of the page (instantly
-   when reduced motion is preferred).
-
-**Acceptance criteria**
-
-| # | Given | When | Then |
-|---|---|---|---|
-| AC-1 | The page is scrolled down | I click the back-to-top control | the page scrolls to the top |
-| AC-2 | The footer is displayed | I inspect it | it shows the current year |
-
-**Failure, boundary and permission behaviour**
-
-| Case | Condition | Expected behaviour |
-|---|---|---|
-| Boundary | Reduced-motion preference | Scroll to top is instant, no animation |
-| Not permitted | N/A | — |
-
-**Data touched** — none; the year is generated from the visitor's clock.
 ## 5. Screens
-
-The design is the source of truth for appearance; this section maps functions
-onto it so nothing in the design is unaccounted for and nothing specified here
-is missing from the design.
 
 | Screen | Section in the design | Functions it serves | States that must exist |
 |---|---|---|---|
-| Header | Sticky nav + hamburger | LANDING-003 | default, mobile-open, reduced-motion |
-| Hero | Hero with avatar visual | LANDING-001, LANDING-002 | default, reduced-motion |
-| About | About + fact rows | LANDING-005, LANDING-006 | default |
-| Skills | 6 skill cards | LANDING-007, LANDING-008 | default (3/2/1-column reflow) |
-| Projects | 3 project cards | LANDING-009 | default |
-| Project modal | Modal overlay | LANDING-010 | closed, open, error-free |
-| Contact | Contact card + form | LANDING-011, LANDING-012, LANDING-013 | default, field errors, success |
-| Footer | Footer + back-to-top | LANDING-014 | default |
-| Toast | Placeholder-link notice | LANDING-011 | hidden, showing, auto-hide |
+| One-page landing | Hero | LANDING-001 | default |
+| One-page landing | About | LANDING-002 | default, empty-placeholder |
+| One-page landing | Skills | LANDING-003 | default, underflow |
+| One-page landing | Projects | LANDING-004 | default, missing-url |
+| One-page landing | Contact | LANDING-005 | default, form-invalid, form-submitted |
 
 ## 6. Non-functional requirements
 
 | Area | Requirement |
 |---|---|
-| Performance | Page is fully rendered and interactive within 3s on a typical 4G connection; all assets are static (no runtime data fetch) |
-| Accessibility | Keyboard reachable throughout; visible focus ring; labelled form fields; focus trap in modal; skip link; `role="status"` toast; body text contrast ≥ 4.5:1 and interactive-element contrast ≥ 3:1 (see design-system contrast audit) |
-| Responsive | Works from 320px up; no horizontal page scroll at any breakpoint |
-| Motion | All animation respects `prefers-reduced-motion: reduce` (durations collapse, scroll becomes instant) |
-| Localisation | Page copy is in English (placeholder); the site name "Giới thiệu bản thân" appears verbatim as the owner's brand |
-| Privacy | The form stores or transmits nothing; it only composes a `mailto:` email in the visitor's own client |
+| Performance | Page reaches First Contentful Paint within 2 s on a 4 Mbps connection |
+| Accessibility | Keyboard reachable; visible focus ring on all interactive elements; all images have alt text; form inputs have associated labels; colour contrast ≥ 4.5:1 for normal text and ≥ 3:1 for large text |
+| Responsive | Page works at 320 px and up with no horizontal overflow at any breakpoint |
+| Localisation | All copy is in Vietnamese; dates and numbers formatted for `vi-VN` if any are displayed |
+| Privacy | No personal data is collected or stored; the contact form submits to the visitor's own email client only |
 
 ## 7. Dependencies and assumptions
 
-- **Depends on:** the approved design (`design/index.html`) and its extracted
-  `design/design-system.md`; no other module, no backend, no database.
-- **Assumption:** placeholder copy and the placeholder email
-  `hello@minhan.dev` are acceptable and will be replaced later by the owner.
-  If the owner supplies real GitHub/LinkedIn URLs, the placeholder toast
-  behaviour (LANDING-011) is replaced by real navigation links.
+- **Depends on:** No backend or external services — fully static.
+- **Assumption:** The visitor has JavaScript enabled for the smooth-scroll behaviour; without it the native anchor href provides equivalent navigation.
+- **Assumption:** The stakeholder will replace placeholder copy (name, bio, skills, projects) with real content before publishing.
 
 | Open question | Proposed default | Who decides |
 |---|---|---|
-| Real GitHub/LinkedIn profile URLs | Keep placeholder toast behaviour until the owner provides URLs | Stakeholder |
-| Real email address | Keep `hello@minhan.dev` placeholder | Stakeholder |
+| What email address does the `mailto:` form send to? | `hello@[domain]` placeholder; stakeholder fills in real address | Stakeholder |
+| What GitHub and LinkedIn URLs are used? | `#` placeholder links; stakeholder replaces with real profiles | Stakeholder |
 
 ## 8. Traceability
 
+Every plan item in this module appears exactly once, and every requirement id traces to a test case.
+
 | Plan item | Requirement ids | Test cases |
 |---|---|---|
-| Hero section | LANDING-001, LANDING-002, LANDING-003, LANDING-004 | `test-cases/hero.md` |
-| About section | LANDING-005, LANDING-006 | `test-cases/about.md` |
-| Skills section | LANDING-007, LANDING-008 | `test-cases/skills.md` |
-| Projects section | LANDING-009, LANDING-010 | `test-cases/projects.md` |
-| Contact section | LANDING-011, LANDING-012, LANDING-013, LANDING-014 | `test-cases/contact.md` |
+| Hero section | LANDING-001 | `test-cases/hero.md` |
+| About section | LANDING-002 | `test-cases/about.md` |
+| Skills section | LANDING-003 | `test-cases/skills.md` |
+| Projects section | LANDING-004 | `test-cases/projects.md` |
+| Contact section | LANDING-005 | `test-cases/contact.md` |
