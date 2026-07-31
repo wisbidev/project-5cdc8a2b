@@ -1,0 +1,511 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Design tokens — single source of truth for all components.
+   Story authors must NOT edit this file; use existing token
+   classes. New tokens require a TL-approved design-system update.
+   ============================================================ */
+
+:root {
+  --color-bg: #F9FAFB;
+  --color-surface: #FFFFFF;
+  --color-surface-raised: #FFFFFF;
+  --color-border: #E5E7EB;
+  --color-text: #111827;
+  --color-text-muted: #6B7280;
+  --color-primary: #4F46E5;
+  --color-primary-strong: #4338CA;
+  --color-primary-soft: #EEF2FF;
+  --color-accent: #F59E0B;
+  --color-focus: rgba(79, 70, 229, 0.55);
+  --color-success: #22C55E;
+  --color-success-bg: #F0FDF4;
+  --color-success-border: #BBF7D0;
+  --color-danger: #DC2626;
+  --color-error-bg: #FEF2F2;
+  --color-error-focus: rgba(220, 38, 38, 0.14);
+  --color-placeholder: #9CA3AF;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-14: 56px;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-card: 14px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-full: 999px;
+
+  --border-width: 1px;
+  --border-width-md: 1.5px;
+  --border-width-lg: 2px;
+
+  --shadow-sm: 0 10px 30px rgba(17, 24, 39, 0.08);
+  --shadow-md: 0 24px 60px rgba(17, 24, 39, 0.14);
+
+  --duration-fast: 200ms;
+  --duration-base: 250ms;
+  --duration-slow: 300ms;
+  --duration-panel: 350ms;
+
+  --easing: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ============================================================
+   Base reset and global rules
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+/* ============================================================
+   Focus styles
+   ============================================================ */
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================================
+   Skip link
+   ============================================================ */
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 200;
+  background: var(--color-text);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 0 0 10px 0;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+/* ============================================================
+   Container
+   ============================================================ */
+
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 13px 26px;
+  border-radius: var(--radius-full);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition:
+    transform var(--duration-base) var(--easing),
+    box-shadow var(--duration-base) var(--easing),
+    background var(--duration-fast),
+    border-color var(--duration-fast),
+    color var(--duration-fast);
+  min-height: 44px;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(79, 70, 229, 0.4);
+}
+
+.btn-ghost {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.btn-ghost:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.btn-sm {
+  padding: 9px 20px;
+  font-size: 14px;
+}
+
+/* ============================================================
+   Section base
+   ============================================================ */
+
+.section {
+  padding: 84px 0;
+}
+
+.sec-head {
+  max-width: 640px;
+  margin: 0 auto 52px;
+  text-align: center;
+}
+
+.sec-tag {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  margin-bottom: 16px;
+}
+
+.sec-head h2 {
+  font-size: clamp(28px, 4vw, 38px);
+  letter-spacing: -0.02em;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.sec-head p {
+  color: var(--color-text-muted);
+  margin-top: 12px;
+  font-size: 16.5px;
+}
+
+/* ============================================================
+   Card base
+   ============================================================ */
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--duration-base) var(--easing),
+    box-shadow var(--duration-base) var(--easing),
+    border-color var(--duration-fast);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(79, 70, 229, 0.35);
+}
+
+/* ============================================================
+   Eyebrow / badge
+   ============================================================ */
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  padding: 7px 16px;
+  border-radius: var(--radius-full);
+  margin-bottom: 20px;
+}
+
+/* ============================================================
+   Reveal on scroll
+   ============================================================ */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.7s var(--easing),
+    transform 0.7s var(--easing);
+}
+
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ============================================================
+   Form inputs
+   ============================================================ */
+
+.field-input {
+  width: 100%;
+  font: inherit;
+  font-size: 15px;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: var(--border-width-md) solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  transition:
+    border-color var(--duration-fast),
+    box-shadow var(--duration-fast),
+    background var(--duration-fast);
+}
+
+.field-input::placeholder {
+  color: var(--color-placeholder);
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background: var(--color-surface);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.14);
+}
+
+.field.invalid .field-input {
+  border-color: var(--color-danger);
+  background: var(--color-error-bg);
+}
+
+.field.invalid .field-input:focus {
+  box-shadow: 0 0 0 4px var(--color-error-focus);
+}
+
+.field-error {
+  color: var(--color-danger);
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+/* ============================================================
+   Success / error states
+   ============================================================ */
+
+.form-success {
+  background: var(--color-success-bg);
+  border: 1px solid var(--color-success-border);
+  color: #15803d;
+  border-radius: var(--radius-card);
+  padding: 16px 20px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* ============================================================
+   Toast
+   ============================================================ */
+
+.toast {
+  position: fixed;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-text);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 400;
+  animation: toastIn 0.3s var(--easing) forwards;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* ============================================================
+   Modal
+   ============================================================ */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.25s var(--easing) forwards;
+}
+
+.modal {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  padding: 32px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalIn 0.35s var(--easing) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background var(--duration-fast),
+    color var(--duration-fast),
+    transform var(--duration-fast);
+  margin-left: auto;
+  margin-bottom: 16px;
+}
+
+.modal-close:hover {
+  background: var(--color-text);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+/* ============================================================
+   Back to top
+   ============================================================ */
+
+.back-to-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: var(--radius-full);
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast),
+    border-color var(--duration-fast),
+    color var(--duration-fast),
+    transform var(--duration-base) var(--easing);
+  text-decoration: none;
+}
+
+.back-to-top:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+  transform: translateY(-3px);
+}
+
+/* ============================================================
+   Typography helpers
+   ============================================================ */
+
+.text-primary { color: var(--color-primary); }
+.text-accent  { color: var(--color-accent); }
+.text-muted   { color: var(--color-text-muted); }
+.font-bold    { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
