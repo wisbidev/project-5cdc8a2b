@@ -1,0 +1,154 @@
+/* Contact.module.css — component-scoped styles for Contact.tsx
+   Uses design-system tokens from globals.css.
+   Do NOT duplicate tokens already defined in globals.css.
+*/
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-12);
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+}
+
+/* ---- Form wrapper ---- */
+.formWrap {
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-10);
+}
+
+@media (max-width: 640px) {
+  .formWrap {
+    padding: var(--space-6);
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ---- Field group ---- */
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.fieldLabel {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.fieldRequired {
+  color: var(--color-danger);
+  margin-left: 2px;
+}
+
+/* ---- Success panel ---- */
+.success {
+  background: var(--color-success-bg);
+  border: var(--border-width) solid var(--color-success-border);
+  color: #15803d;
+  border-radius: var(--radius-card);
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--text-base);
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.successLink {
+  color: #15803d;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ---- Submit button label states ---- */
+.submitBtn {
+  align-self: flex-start;
+}
+
+/* ---- Info panel ---- */
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ---- Contact info card ---- */
+.infoCard {
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.infoCardHeading {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+/* ---- Email link ---- */
+.emailLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-primary);
+  transition: color var(--duration-fast);
+}
+
+.emailLink:hover {
+  color: var(--color-primary-strong);
+}
+
+/* ---- Social links ---- */
+.socials {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  padding: 10px var(--space-4);
+  border-radius: var(--radius-md);
+  border: var(--border-width) solid var(--color-border);
+  background: var(--color-bg);
+  cursor: pointer;
+  transition:
+    color var(--duration-fast),
+    border-color var(--duration-fast),
+    background var(--duration-fast),
+    transform var(--duration-base) var(--easing);
+}
+
+.socialLink:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  transform: translateX(4px);
+}
