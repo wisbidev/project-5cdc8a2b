@@ -1,44 +1,36 @@
 /**
  * About section — Server Component.
  * No "use client", no hooks, no event handlers.
- * Uses design-system tokens and the project-wide .reveal pattern
- * which is controlled by the shared RevealObserver client component.
+ * The .reveal animation is controlled by the shared RevealObserver
+ * client component in the page shell.
  */
 
 import styles from './About.module.css'
 import { aboutSectionData } from '@/lib/mock/about-section'
 
-// Inline SVG icons for the four fact items.
-function FactIcon({ icon }: { icon: string }) {
-  if (icon === 'location') {
-    return (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" />
-        <circle cx="12" cy="10" r="3" />
-      </svg>
-    )
-  }
-  if (icon === 'focus') {
-    return (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="9" />
-        <path d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
-      </svg>
-    )
-  }
-  if (icon === 'heart') {
-    return (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8Z" />
-      </svg>
-    )
-  }
-  // languages
-  return (
+const ICONS: Record<string, React.ReactNode> = {
+  location: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" />
+      <circle cx="12" cy="10" r="3" />
+    </svg>
+  ),
+  focus: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
+    </svg>
+  ),
+  heart: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8Z" />
+    </svg>
+  ),
+  languages: (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6" />
     </svg>
-  )
+  ),
 }
 
 export default function About() {
@@ -84,11 +76,11 @@ export default function About() {
               <p key={i} className={styles.aboutBody}>{text}</p>
             ))}
 
-            <ul className={styles.facts} aria-label="Quick facts">
+            <ul className={styles.facts}>
               {facts.map((fact) => (
                 <li key={fact.label} className={styles.fact}>
                   <span className={styles.factIcon}>
-                    <FactIcon icon={fact.icon} />
+                    {ICONS[fact.icon]}
                   </span>
                   <span className={styles.factContent}>
                     <span className={styles.factLabel}>{fact.label}</span>
