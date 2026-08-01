@@ -1,27 +1,72 @@
-'use client'
+/**
+ * About section — Server Component.
+ * No "use client", no hooks, no event handlers.
+ * Uses design-system tokens and the project-wide .reveal pattern
+ * which is controlled by the shared RevealObserver client component.
+ */
+
+import styles from './About.module.css'
+import { aboutSectionData } from '@/lib/mock/about-section'
+
+// Inline SVG icons for the four fact items.
+function FactIcon({ icon }: { icon: string }) {
+  if (icon === 'location') {
+    return (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" />
+        <circle cx="12" cy="10" r="3" />
+      </svg>
+    )
+  }
+  if (icon === 'focus') {
+    return (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
+      </svg>
+    )
+  }
+  if (icon === 'heart') {
+    return (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8Z" />
+      </svg>
+    )
+  }
+  // languages
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6" />
+    </svg>
+  )
+}
 
 export default function About() {
+  const { eyebrow, heading, subCopy, lead, body, facts } = aboutSectionData
+
   return (
-    <section id="about" className="about section">
+    <section id="about" className="section">
       <div className="container">
+        {/* Section header */}
         <div className="sec-head reveal">
-          <span className="sec-tag">About me</span>
-          <h2>A little bit about who I am</h2>
-          <p>The short version — and the slightly longer one.</p>
+          <span className="sec-tag">{eyebrow}</span>
+          <h2>{heading}</h2>
+          <p>{subCopy}</p>
         </div>
 
-        <div className="about-grid">
+        {/* Two-column grid: illustration left, copy + facts right */}
+        <div className={styles.aboutGrid}>
           {/* Decorative illustration */}
-          <div className="about-visual reveal" aria-hidden="true">
+          <div className={`${styles.aboutVisual} reveal`} aria-hidden="true">
             <svg viewBox="0 0 480 380" role="img" aria-label="Decorative illustration">
               <defs>
-                <linearGradient id="gA" x1="0" y1="0" x2="1" y2="1">
+                <linearGradient id="gAbout" x1="0" y1="0" x2="1" y2="1">
                   <stop offset="0" stopColor="#4F46E5" />
                   <stop offset="1" stopColor="#F59E0B" />
                 </linearGradient>
               </defs>
               <rect x="24" y="24" width="432" height="332" rx="24" fill="#EEF2FF" />
-              <circle cx="240" cy="170" r="86" fill="url(#gA)" opacity="0.92" />
+              <circle cx="240" cy="170" r="86" fill="url(#gAbout)" opacity="0.92" />
               <circle cx="240" cy="170" r="86" fill="none" stroke="#FFFFFF" strokeWidth="6" />
               <circle cx="196" cy="126" r="14" fill="#FFFFFF" opacity="0.95" />
               <circle cx="284" cy="126" r="14" fill="#FFFFFF" opacity="0.95" />
@@ -32,167 +77,30 @@ export default function About() {
             </svg>
           </div>
 
-          {/* Copy */}
-          <div className="about-copy reveal">
-            <p className="about-lead">
-              I&apos;m Minh An — a web developer and designer based in Ho Chi
-              Minh City.
-            </p>
-            <p className="about-body">
-              For the past three years I&apos;ve helped startups and small teams
-              shape their ideas into products: mapping out what to build,
-              designing the screens, and shipping the code. I care about the
-              details most people never notice — the half-second animation, the
-              error message that explains itself, the button that feels right to
-              click.
-            </p>
-            <p className="about-body">
-              When I&apos;m not at the keyboard, you&apos;ll find me with a
-              camera in hand, exploring the city&apos;s backstreets, or hunting
-              down the best coffee in town.
-            </p>
+          {/* Copy + facts */}
+          <div className={styles.aboutCopy}>
+            <p className={styles.aboutLead}>{lead}</p>
+            {body.map((text, i) => (
+              <p key={i} className={styles.aboutBody}>{text}</p>
+            ))}
 
-            <ul className="facts">
-              <li className="fact">
-                <span className="fact-icon" aria-hidden="true">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
-                </span>
-                <span>
-                  <strong>Location</strong>
-                  <br />
-                  Ho Chi Minh City, Vietnam
-                </span>
-              </li>
-              <li className="fact">
-                <span className="fact-icon" aria-hidden="true">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
-                  </svg>
-                </span>
-                <span>
-                  <strong>Focus</strong>
-                  <br />
-                  Web development &amp; product design
-                </span>
-              </li>
-              <li className="fact">
-                <span className="fact-icon" aria-hidden="true">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8Z" />
-                  </svg>
-                </span>
-                <span>
-                  <strong>Currently</strong>
-                  <br />
-                  Open to new opportunities
-                </span>
-              </li>
-              <li className="fact">
-                <span className="fact-icon" aria-hidden="true">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6" />
-                  </svg>
-                </span>
-                <span>
-                  <strong>Languages</strong>
-                  <br />
-                  Vietnamese, English
-                </span>
-              </li>
+            <ul className={styles.facts} aria-label="Quick facts">
+              {facts.map((fact) => (
+                <li key={fact.label} className={styles.fact}>
+                  <span className={styles.factIcon}>
+                    <FactIcon icon={fact.icon} />
+                  </span>
+                  <span className={styles.factContent}>
+                    <span className={styles.factLabel}>{fact.label}</span>
+                    <br />
+                    {fact.value}
+                  </span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        .about-grid {
-          display: grid;
-          grid-template-columns: 1fr 1.1fr;
-          gap: 48px;
-          align-items: start;
-        }
-
-        .about-visual svg {
-          width: 100%;
-          height: auto;
-        }
-
-        .about-lead {
-          font-size: 22px;
-          font-weight: 700;
-          line-height: 1.3;
-          color: var(--color-text);
-          margin-bottom: 20px;
-        }
-
-        .about-body {
-          font-size: 15px;
-          line-height: 1.65;
-          color: var(--color-text-muted);
-          margin-bottom: 16px;
-        }
-
-        .facts {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
-          margin-top: 24px;
-        }
-
-        .fact {
-          display: flex;
-          align-items: flex-start;
-          gap: 12px;
-          background: var(--color-surface);
-          border: 1px solid var(--color-border);
-          border-radius: var(--radius-card);
-          padding: 14px 16px;
-          box-shadow: var(--shadow-sm);
-          transition:
-            transform var(--duration-base) var(--easing),
-            box-shadow var(--duration-base) var(--easing),
-            border-color var(--duration-fast);
-        }
-
-        .fact:hover {
-          transform: translateY(-3px);
-          box-shadow: var(--shadow-md);
-          border-color: rgba(79, 70, 229, 0.35);
-        }
-
-        .fact-icon {
-          color: var(--color-primary);
-          flex-shrink: 0;
-          margin-top: 2px;
-        }
-
-        .fact span {
-          font-size: 14px;
-          color: var(--color-text-muted);
-          line-height: 1.5;
-        }
-
-        .fact strong {
-          font-weight: 700;
-          color: var(--color-text);
-        }
-
-        @media (max-width: 960px) {
-          .about-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-
-        @media (max-width: 640px) {
-          .facts {
-            grid-template-columns: 1fr;
-          }
-        }
-      `}</style>
     </section>
   )
 }
