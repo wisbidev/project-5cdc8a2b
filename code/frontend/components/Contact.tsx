@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import styles from './Contact.module.css'
 import { contactData } from '@/lib/mock/contact-section'
 import { showToast } from './Toast'
+import Toast from './Toast'
 
 interface FormErrors {
   name?: string
@@ -159,163 +160,171 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="section">
-      <div className="container">
-        {/* Section header */}
-        <div className="sec-head reveal">
-          <span className="sec-tag">{section.eyebrow}</span>
-          <h2>{section.heading}</h2>
-          <p>{section.subheading}</p>
-        </div>
+    <>
+      <section id="contact" className="section">
+        <div className="container">
+          {/* Section header */}
+          <div className="sec-head reveal">
+            <span className="sec-tag">{section.eyebrow}</span>
+            <h2>{section.heading}</h2>
+            <p>{section.subheading}</p>
+          </div>
 
-        {/* Two-column grid */}
-        <div className={`${styles.grid} reveal`}>
-          {/* Form column */}
-          <div className={styles.formWrap}>
-            <form
-              className={styles.form}
-              noValidate
-              onSubmit={handleSubmit}
-              aria-label="Contact form"
-            >
-              {/* Name */}
-              <div className={`field${errors.name ? ' invalid' : ''} ${styles.fieldGroup}`}>
-                <label className={styles.fieldLabel} htmlFor="contact-name">
-                  {form.fields[0].label}{' '}
-                  <span className={styles.fieldRequired} aria-label="required">*</span>
-                </label>
-                <input
-                  id="contact-name"
-                  type="text"
-                  className="field-input"
-                  placeholder={form.fields[0].placeholder}
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value)
-                    if (errors.name) setErrors((p) => ({ ...p, name: undefined }))
-                  }}
-                  required
-                  autoComplete="name"
-                  ref={nameRef}
-                />
-                {errors.name && (
-                  <p className="field-error" role="alert">
-                    {errors.name}
-                  </p>
-                )}
-              </div>
-
-              {/* Email */}
-              <div className={`field${errors.email ? ' invalid' : ''} ${styles.fieldGroup}`}>
-                <label className={styles.fieldLabel} htmlFor="contact-email">
-                  {form.fields[1].label}{' '}
-                  <span className={styles.fieldRequired} aria-label="required">*</span>
-                </label>
-                <input
-                  id="contact-email"
-                  type="email"
-                  className="field-input"
-                  placeholder={form.fields[1].placeholder}
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value)
-                    if (errors.email) setErrors((p) => ({ ...p, email: undefined }))
-                  }}
-                  required
-                  autoComplete="email"
-                  ref={emailRef}
-                />
-                {errors.email && (
-                  <p className="field-error" role="alert">
-                    {errors.email}
-                  </p>
-                )}
-              </div>
-
-              {/* Message */}
-              <div className={`field${errors.message ? ' invalid' : ''} ${styles.fieldGroup}`}>
-                <label className={styles.fieldLabel} htmlFor="contact-message">
-                  {form.fields[2].label}{' '}
-                  <span className={styles.fieldRequired} aria-label="required">*</span>
-                </label>
-                <textarea
-                  id="contact-message"
-                  className="field-input"
-                  rows={5}
-                  placeholder={form.fields[2].placeholder}
-                  value={message}
-                  onChange={(e) => {
-                    setMessage(e.target.value)
-                    if (errors.message) setErrors((p) => ({ ...p, message: undefined }))
-                  }}
-                  required
-                  ref={messageRef}
-                />
-                {errors.message && (
-                  <p className="field-error" role="alert">
-                    {errors.message}
-                  </p>
-                )}
-              </div>
-
-              <button
-                type="submit"
-                className={`btn btn-primary ${styles.submitBtn}`}
-                disabled={submitted}
+          {/* Two-column grid */}
+          <div className={`${styles.grid} reveal`}>
+            {/* Form column */}
+            <div className={styles.formWrap}>
+              <form
+                className={styles.form}
+                noValidate
+                onSubmit={handleSubmit}
+                aria-label="Contact form"
               >
-                {submitted ? 'Sent!' : form.submitLabel}
-                {!submitted && <IconArrow />}
-              </button>
-
-              {submitted && (
-                <div className={styles.success} role="status">
-                  {form.successMessage}{' '}
-                  <a
-                    href={`mailto:${owner.email}`}
-                    className={styles.successLink}
-                  >
-                    {owner.email}
-                  </a>
-                  .
+                {/* Name */}
+                <div className={`field${errors.name ? ' invalid' : ''} ${styles.fieldGroup}`}>
+                  <label className={styles.fieldLabel} htmlFor="contact-name">
+                    {form.fields[0].label}{' '}
+                    <span className={styles.fieldRequired} aria-label="required">*</span>
+                  </label>
+                  <input
+                    id="contact-name"
+                    type="text"
+                    className="field-input"
+                    placeholder={form.fields[0].placeholder}
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value)
+                      if (errors.name)
+                        setErrors((p) => ({ ...p, name: undefined }))
+                    }}
+                    required
+                    autoComplete="name"
+                    ref={nameRef}
+                  />
+                  {errors.name && (
+                    <p className="field-error" role="alert">
+                      {errors.name}
+                    </p>
+                  )}
                 </div>
-              )}
-            </form>
-          </div>
 
-          {/* Info column */}
-          <div className={styles.info}>
-            {/* Email card */}
-            <div className={styles.infoCard}>
-              <h3 className={styles.infoCardHeading}>Direct contact</h3>
-              <a href={`mailto:${owner.email}`} className={styles.emailLink}>
-                <IconMail />
-                {owner.email}
-              </a>
+                {/* Email */}
+                <div className={`field${errors.email ? ' invalid' : ''} ${styles.fieldGroup}`}>
+                  <label className={styles.fieldLabel} htmlFor="contact-email">
+                    {form.fields[1].label}{' '}
+                    <span className={styles.fieldRequired} aria-label="required">*</span>
+                  </label>
+                  <input
+                    id="contact-email"
+                    type="email"
+                    className="field-input"
+                    placeholder={form.fields[1].placeholder}
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value)
+                      if (errors.email)
+                        setErrors((p) => ({ ...p, email: undefined }))
+                    }}
+                    required
+                    autoComplete="email"
+                    ref={emailRef}
+                  />
+                  {errors.email && (
+                    <p className="field-error" role="alert">
+                      {errors.email}
+                    </p>
+                  )}
+                </div>
+
+                {/* Message */}
+                <div className={`field${errors.message ? ' invalid' : ''} ${styles.fieldGroup}`}>
+                  <label className={styles.fieldLabel} htmlFor="contact-message">
+                    {form.fields[2].label}{' '}
+                    <span className={styles.fieldRequired} aria-label="required">*</span>
+                  </label>
+                  <textarea
+                    id="contact-message"
+                    className="field-input"
+                    rows={5}
+                    placeholder={form.fields[2].placeholder}
+                    value={message}
+                    onChange={(e) => {
+                      setMessage(e.target.value)
+                      if (errors.message)
+                        setErrors((p) => ({ ...p, message: undefined }))
+                    }}
+                    required
+                    ref={messageRef}
+                  />
+                  {errors.message && (
+                    <p className="field-error" role="alert">
+                      {errors.message}
+                    </p>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  className={`btn btn-primary ${styles.submitBtn}`}
+                  disabled={submitted}
+                >
+                  {submitted ? 'Sent!' : form.submitLabel}
+                  {!submitted && <IconArrow />}
+                </button>
+
+                {submitted && (
+                  <div className={styles.success} role="status">
+                    {form.successMessage}{' '}
+                    <a
+                      href={`mailto:${owner.email}`}
+                      className={styles.successLink}
+                    >
+                      {owner.email}
+                    </a>
+                    .
+                  </div>
+                )}
+              </form>
             </div>
 
-            {/* Social links card */}
-            <div className={styles.infoCard}>
-              <h3 className={styles.infoCardHeading}>Find me online</h3>
-              <div className={styles.socials}>
-                {socials.map((social) => (
-                  <button
-                    key={social.id}
-                    type="button"
-                    className={styles.socialLink}
-                    onClick={() => handleSocialClick(social.id)}
-                    aria-label={`${social.label} profile (placeholder)`}
-                  >
-                    {social.icon === 'github' && <IconGithub />}
-                    {social.icon === 'linkedin' && <IconLinkedIn />}
-                    {social.icon === 'twitter' && <IconTwitter />}
-                    {social.label}
-                  </button>
-                ))}
+            {/* Info column */}
+            <div className={styles.info}>
+              {/* Email card */}
+              <div className={styles.infoCard}>
+                <h3 className={styles.infoCardHeading}>Direct contact</h3>
+                <a href={`mailto:${owner.email}`} className={styles.emailLink}>
+                  <IconMail />
+                  {owner.email}
+                </a>
+              </div>
+
+              {/* Social links card */}
+              <div className={styles.infoCard}>
+                <h3 className={styles.infoCardHeading}>Find me online</h3>
+                <div className={styles.socials}>
+                  {socials.map((social) => (
+                    <button
+                      key={social.id}
+                      type="button"
+                      className={styles.socialLink}
+                      onClick={() => handleSocialClick(social.id)}
+                      aria-label={`${social.label} profile (placeholder)`}
+                    >
+                      {social.icon === 'github' && <IconGithub />}
+                      {social.icon === 'linkedin' && <IconLinkedIn />}
+                      {social.icon === 'twitter' && <IconTwitter />}
+                      {social.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Toast mounted here so showToast() from sibling client components works */}
+      <Toast />
+    </>
   )
 }
