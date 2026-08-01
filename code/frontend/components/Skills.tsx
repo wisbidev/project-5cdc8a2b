@@ -21,7 +21,7 @@ export default async function Skills() {
             {skills.map((skill) => (
               <article
                 key={skill.title}
-                className={`card skill-card ${styles.card} reveal`}
+                className={`card ${styles.card} reveal`}
               >
                 <span className={styles.icon} aria-hidden="true">
                   {skill.icon}
