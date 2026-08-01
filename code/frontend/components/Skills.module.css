@@ -1,0 +1,37 @@
+/* Responsive grid: 1 col (mobile) → 2 col (sm 640px+) → 3 col (xl 1120px+) */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1120px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Skill icon container */
+.icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-md);
+  color: var(--color-primary);
+  flex-shrink: 0;
+  transition: transform var(--duration-base) var(--easing);
+}
+
+/* Icon spin on card hover — mirrors .skill-card:hover .skill-icon in index.html */
+.skillCard:hover .icon {
+  transform: scale(1.08) rotate(-4deg);
+}
