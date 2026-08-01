@@ -17,6 +17,14 @@
   }
 }
 
+/* Skill card padding + typography */
+.card {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 /* Skill icon container */
 .icon {
   width: 48px;
@@ -31,7 +39,22 @@
   transition: transform var(--duration-base) var(--easing);
 }
 
-/* Icon spin on card hover — mirrors .skill-card:hover .skill-icon in index.html */
-.skillCard:hover .icon {
+/* Icon spin on card hover */
+.card:hover .icon {
   transform: scale(1.08) rotate(-4deg);
+}
+
+/* Card heading */
+.card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.4;
+}
+
+/* Card description */
+.card p {
+  font-size: 15px;
+  color: var(--color-text-muted);
+  line-height: 1.65;
 }
