@@ -12,33 +12,19 @@ export default async function Skills() {
           <span className="sec-tag">Skills</span>
           <h2>What I bring to the table</h2>
           <p>
-            A mix of craft, process, and the soft skills that keep teams moving.
+            A mix of craft, process, and the soft skills that keep teams move.
           </p>
         </div>
 
         <RevealObserver>
           <div className={styles.grid}>
             {skills.map((skill) => (
-              <article key={skill.title} className="card skill-card reveal">
+              <article
+                key={skill.title}
+                className={`card skill-card ${styles.card} reveal`}
+              >
                 <span className={styles.icon} aria-hidden="true">
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    {/* Each icon's path is stored as a space-separated polyline/path string */}
-                    {skill.iconPath.split('M').filter(Boolean).map((segment, i) => (
-                      <path
-                        key={i}
-                        d={i === 0 ? `M${segment}` : `M${segment}`}
-                      />
-                    ))}
-                  </svg>
+                  {skill.icon}
                 </span>
                 <h3>{skill.title}</h3>
                 <p>{skill.description}</p>
