@@ -9,6 +9,7 @@ import About from '@/components/About'
 import Skills from '@/components/Skills'
 import Projects from '@/components/Projects'
 import Contact from '@/components/Contact'
+import Toast from '@/components/Toast'
 import Footer from '@/components/Footer'
 
 export default function HomePage() {
@@ -23,6 +24,7 @@ export default function HomePage() {
         <Projects />
         <Contact />
       </main>
+      <Toast />
       <Footer />
     </>
   )
