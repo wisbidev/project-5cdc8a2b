@@ -5,7 +5,7 @@
 .aboutGrid {
   display: grid;
   grid-template-columns: 0.9fr 1.1fr;
-  gap: var(--space-12);
+  gap: var(--space-14); /* 56px — per approved design index.html */
   align-items: start;
 }
 
